@@ -192,6 +192,8 @@ spec:
               value: "false"
             - name: K8S_SERVICE_CIDR
               value: "10.96.0.0/12"
+            - NAME: PATH
+              value: "C:\\Windows\\system32;C:\\Windows;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;"
           volumeMounts:
             - mountPath: /host/opt/cni/bin
               name: cni-bin-dir
@@ -231,6 +233,8 @@ spec:
           value: "C:/etc/cni/net.d/calico-kubeconfig"
         - name: VXLAN_VNI
           value: "4096"
+        - NAME: PATH
+          value: "C:\\Windows\\system32;C:\\Windows;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;"
       - name: calico-node-felix
         image: sigwindowstools/calico-node:v3.20.4-hostprocess
         args: ["$env:CONTAINER_SANDBOX_MOUNT_POINT/calico/felix-service.ps1"]
@@ -257,6 +261,8 @@ spec:
           value: "4096"
         - name: KUBECONFIG
           value: "C:/etc/cni/net.d/calico-kubeconfig"
+        - NAME: PATH
+          value: "C:\\Windows\\system32;C:\\Windows;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;"
       volumes:
       - name: calico-config-windows
         configMap:

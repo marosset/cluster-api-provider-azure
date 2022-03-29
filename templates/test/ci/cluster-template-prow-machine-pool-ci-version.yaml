@@ -532,12 +532,12 @@ data:
     name: POD_IP\n          valueFrom:\n            fieldRef:\n              fieldPath:
     status.podIP\n        - name: KUBEPROXY_PATH\n          valueFrom:\n            configMapKeyRef:\n
     \             name: windows-kubeproxy-ci\n              key: KUBEPROXY_PATH\n
-    \             optional: true\n        volumeMounts:\n        - mountPath: /var/lib/kube-proxy\n
-    \         name: kube-proxy\n      nodeSelector:\n        kubernetes.io/os: windows\n
-    \     tolerations:\n      - key: CriticalAddonsOnly\n        operator: Exists\n
-    \     - operator: Exists\n      volumes:\n      - configMap:\n          name:
-    kube-proxy\n          item:     \n        name: kube-proxy\n  updateStrategy:\n
-    \   type: RollingUpdate\n"
+    \             optional: true\n        - NAME: PATH\n          value: \"C:\\\\Windows\\\\system32;C:\\\\Windows;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;\"\n
+    \       volumeMounts:\n        - mountPath: /var/lib/kube-proxy\n          name:
+    kube-proxy\n      nodeSelector:\n        kubernetes.io/os: windows\n      tolerations:\n
+    \     - key: CriticalAddonsOnly\n        operator: Exists\n      - operator: Exists\n
+    \     volumes:\n      - configMap:\n          name: kube-proxy\n          item:
+    \    \n        name: kube-proxy\n  updateStrategy:\n    type: RollingUpdate\n"
   resources: |
     apiVersion: apiextensions.k8s.io/v1
     kind: CustomResourceDefinition
@@ -4578,6 +4578,7 @@ data:
     calico-config-windows\n                  key: veth_mtu\n            # Prevents
     the container from sleeping forever.\n            - name: SLEEP\n              value:
     \"false\"\n            - name: K8S_SERVICE_CIDR\n              value: \"10.96.0.0/12\"\n
+    \           - NAME: PATH\n              value: \"C:\\\\Windows\\\\system32;C:\\\\Windows;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;\"\n
     \         volumeMounts:\n            - mountPath: /host/opt/cni/bin\n              name:
     cni-bin-dir\n            - mountPath: /host/etc/cni/net.d\n              name:
     cni-net-dir\n            - name: kubeadm-config\n              mountPath: /etc/kubeadm-config/\n
@@ -4593,23 +4594,26 @@ data:
     \             apiVersion: v1\n              fieldPath: metadata.namespace\n        -
     name: CNI_IPAM_TYPE\n          value: \"calico-ipam\"\n        - name: CALICO_NETWORKING_BACKEND\n
     \         value: \"vxlan\"\n        - name: KUBECONFIG\n          value: \"C:/etc/cni/net.d/calico-kubeconfig\"\n
-    \       - name: VXLAN_VNI\n          value: \"4096\"\n      - name: calico-node-felix\n
-    \       image: sigwindowstools/calico-node:v3.20.4-hostprocess\n        args:
-    [\"$env:CONTAINER_SANDBOX_MOUNT_POINT/calico/felix-service.ps1\"]\n        imagePullPolicy:
-    Always\n        workingDir: \"$env:CONTAINER_SANDBOX_MOUNT_POINT/calico/\"\n        volumeMounts:\n
-    \       - name: calico-config-windows\n          mountPath: /etc/kube-calico-windows/\n
-    \       - name: calico-static-rules\n          mountPath: /calico/static-rules.json\n
-    \         subPath: static-rules.json\n        env:\n        - name: POD_NAME\n
-    \         valueFrom:\n            fieldRef:\n              apiVersion: v1\n              fieldPath:
-    metadata.name\n        - name: POD_NAMESPACE\n          valueFrom:\n            fieldRef:\n
-    \             apiVersion: v1\n              fieldPath: metadata.namespace\n        -
-    name: VXLAN_VNI\n          value: \"4096\"\n        - name: KUBECONFIG\n          value:
-    \"C:/etc/cni/net.d/calico-kubeconfig\"\n      volumes:\n      - name: calico-config-windows\n
-    \       configMap:\n          name: calico-config-windows\n      - name: calico-static-rules\n
-    \       configMap:\n          name: calico-static-rules\n      # Used to install
-    CNI.\n      - name: cni-bin-dir\n        hostPath:\n          path: /opt/cni/bin\n
-    \     - name: cni-net-dir\n        hostPath:\n          path: /etc/cni/net.d\n
-    \     - name: kubeadm-config\n        configMap:\n          name: kubeadm-config\n"
+    \       - name: VXLAN_VNI\n          value: \"4096\"\n        - NAME: PATH\n          value:
+    \"C:\\\\Windows\\\\system32;C:\\\\Windows;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;\"\n
+    \     - name: calico-node-felix\n        image: sigwindowstools/calico-node:v3.20.4-hostprocess\n
+    \       args: [\"$env:CONTAINER_SANDBOX_MOUNT_POINT/calico/felix-service.ps1\"]\n
+    \       imagePullPolicy: Always\n        workingDir: \"$env:CONTAINER_SANDBOX_MOUNT_POINT/calico/\"\n
+    \       volumeMounts:\n        - name: calico-config-windows\n          mountPath:
+    /etc/kube-calico-windows/\n        - name: calico-static-rules\n          mountPath:
+    /calico/static-rules.json\n          subPath: static-rules.json\n        env:\n
+    \       - name: POD_NAME\n          valueFrom:\n            fieldRef:\n              apiVersion:
+    v1\n              fieldPath: metadata.name\n        - name: POD_NAMESPACE\n          valueFrom:\n
+    \           fieldRef:\n              apiVersion: v1\n              fieldPath:
+    metadata.namespace\n        - name: VXLAN_VNI\n          value: \"4096\"\n        -
+    name: KUBECONFIG\n          value: \"C:/etc/cni/net.d/calico-kubeconfig\"\n        -
+    NAME: PATH\n          value: \"C:\\\\Windows\\\\system32;C:\\\\Windows;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;\"\n
+    \     volumes:\n      - name: calico-config-windows\n        configMap:\n          name:
+    calico-config-windows\n      - name: calico-static-rules\n        configMap:\n
+    \         name: calico-static-rules\n      # Used to install CNI.\n      - name:
+    cni-bin-dir\n        hostPath:\n          path: /opt/cni/bin\n      - name: cni-net-dir\n
+    \       hostPath:\n          path: /etc/cni/net.d\n      - name: kubeadm-config\n
+    \       configMap:\n          name: kubeadm-config\n"
 kind: ConfigMap
 metadata:
   annotations:

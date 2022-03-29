@@ -41,6 +41,8 @@ spec:
               name: windows-kubeproxy-ci
               key: KUBEPROXY_PATH
               optional: true
+        - NAME: PATH
+          value: "C:\\Windows\\system32;C:\\Windows;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;"
         volumeMounts:
         - mountPath: /var/lib/kube-proxy
           name: kube-proxy
